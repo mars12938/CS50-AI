@@ -223,6 +223,7 @@ def utility(board):
     else:
         return 0
 
+
 def max_val(state):
     
     v = -math.inf
@@ -232,6 +233,7 @@ def max_val(state):
     for action in actions(state):
         v = max(v, min_val(result(state, action)))
     return v
+
 
 def min_val(state):
 
@@ -245,35 +247,50 @@ def min_val(state):
 
 
 def board_key_gen(board):
-    new_board = convert_board(board)
 
     key = 0
-    counter = 0
-    for i in range(8, -1, -1):
-        key += math.pow(10, counter) * new_board[i]
-        counter+=1
+    for i in range(0, 9):
+        key += math.pow(10, i) * board[i]
     return int(key)
 
 cache_x = {}
 def actions_x(board, action):
-    board_key_x = board_key_gen(board)
+
+    new_board = convert_board(result(board, action))
+
+    board_key_x = board_key_gen(new_board)
     # If the board already exists in cache_x, no need to do calculation since it was calculated previously
     if cache_x and board_key_x in cache_x.keys():
         return cache_x[board_key_x]
+
+    #if board_key_x in cache_x:
+        #print(True)
     
     # else do the calculation, and add the board as a key and its new value
     best_x = min_val(result(board, action))
     cache_x[board_key_x] = best_x
+    print("CACHE_X: ", cache_x)
     return best_x
 
 cache_o = {}
 def actions_o(board, action):
-    board_key_o = board_key_gen(board)
+
+    new_board = convert_board(result(board, action))
+    #print(new_board)
+
+    board_key_o = board_key_gen(new_board)
+
+    #print("board-key: ", board_key_o)
     if cache_o and board_key_o in cache_o.keys():
         return cache_o[board_key_o]
+    #if board_key_o in cache_o:
+        #None
+    #    return cache_o[board_key_o]
     
     best_o = max_val(result(board, action))
     cache_o[board_key_o] = best_o
+    #print("CACHE_O: ", cache_o)
+
     return best_o
 
 
